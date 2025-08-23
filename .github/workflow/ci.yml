@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Fail if forbidden paths were modified
+      - name: Enforce agent scope
+        run: |
+          touched=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          echo "$touched"
+          if echo "$touched" | grep -E '^(mobile/|predictive_models/|payments/)' ; then
+            echo "Forbidden paths modified. Update AGENT_SCOPE.json or open SCOPE-ESCALATION."
+            exit 1
+          fi
+
+      # Your real checks (edit to your stack)
+      - name: Node setup
+        uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: npm ci
+      - run: npm run lint --if-present
+      - run: npm run typecheck --if-present
+      - run: npm test --if-present

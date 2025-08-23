@@ -1,0 +1,8 @@
+{
+    "current_milestone": "MVP",
+    "allowed_areas": ["api/routes", "backend/arbitrage", "frontend/components/Chatbot"],
+    "forbidden_areas": ["payments", "mobile", "predictive_models"],
+    "must_pass": ["unit_tests", "lint", "typecheck"],
+    "do_not_implement_sections": ["FUTURE.md", "spec.md#Phase-2", "spec.md#Phase-3"]
+}
+  
